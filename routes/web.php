@@ -24,4 +24,32 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Route'y z sprawdzaniem ról (przykłady)
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    // Panel admina - dostępny tylko dla admin
+    Route::get('/admin/dashboard', function () {
+        return Inertia::render('Dashboard', [
+            'message' => 'Panel Administratora - dostępny tylko dla admina'
+        ]);
+    })->name('admin.dashboard');
+});
+
+Route::middleware(['auth', 'role:supervisor'])->group(function () {
+    // Panel promotora - dostępny tylko dla supervisor
+    Route::get('/supervisor/dashboard', function () {
+        return Inertia::render('Dashboard', [
+            'message' => 'Panel Promotora - dostępny tylko dla promotorów'
+        ]);
+    })->name('supervisor.dashboard');
+});
+
+Route::middleware(['auth', 'role:student'])->group(function () {
+    // Panel studenta - dostępny tylko dla student
+    Route::get('/student/dashboard', function () {
+        return Inertia::render('Dashboard', [
+            'message' => 'Panel Studenta - dostępny tylko dla studentów'
+        ]);
+    })->name('student.dashboard');
+});
+
 require __DIR__.'/auth.php';

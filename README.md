@@ -1,59 +1,88 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ThesisHub
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+System zarządzania pracami dyplomowymi dla uczelni wyższych.
 
-## About Laravel
+## 🚀 Technologie
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Backend:** Laravel 12
+- **Frontend:** Vue 3 + Inertia.js
+- **Styling:** Tailwind CSS
+- **Database:** SQLite (dev) / MySQL (production)
+- **Auth:** Laravel Breeze
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📦 Instalacja
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```bash
+# Sklonuj repo
+git clone https://github.com/michal94mk/ThesisHub.git
+cd ThesisHub
 
-## Learning Laravel
+# Zainstaluj zależności
+composer install
+npm install
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+# Skonfiguruj .env
+cp .env.example .env
+php artisan key:generate
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Uruchom migracje i seedery
+php artisan migrate:fresh --seed
 
-## Laravel Sponsors
+# Uruchom serwery
+php artisan serve
+npm run dev
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 👥 Użytkownicy testowi
 
-### Premium Partners
+Po uruchomieniu `php artisan migrate:fresh --seed` dostępni są użytkownicy:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Administrator
+- **Email:** admin@thesis.pl
+- **Hasło:** password
+- **Dostęp:** Panel administracyjny
 
-## Contributing
+### Promotorzy
+- **Email:** kowalski@thesis.pl / password
+- **Email:** nowak@thesis.pl / password  
+- **Email:** wisniewski@thesis.pl / password
+- **Dostęp:** Panel promotora
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Studenci
+- **Email:** student1@thesis.pl / password
+- **Email:** student2@thesis.pl / password
+- **Email:** student3@thesis.pl / password
+- **Email:** student4@thesis.pl / password
+- **Email:** student5@thesis.pl / password
+- **Dostęp:** Panel studenta
 
-## Code of Conduct
+## 🔐 System ról
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Aplikacja posiada 3 role:
 
-## Security Vulnerabilities
+- **admin** - pełny dostęp do systemu
+- **supervisor** (promotor) - zarządzanie pracami studentów
+- **student** - zgłaszanie i zarządzanie własnymi pracami
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 📝 Status projektu
 
-## License
+✅ Ukończone:
+- [x] Setup Laravel + Breeze + Inertia + Vue 3
+- [x] System autoryzacji z 3 rolami
+- [x] Middleware sprawdzające role
+- [x] Seedery z użytkownikami testowymi
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+🚧 W trakcie:
+- [ ] Model Thesis (prace dyplomowe)
+- [ ] Upload dokumentów + wersjonowanie
+- [ ] System czatu
+- [ ] Kalendarz i terminy
+- [ ] System powiadomień
+
+## 📄 Licencja
+
+MIT License
+
+## 👨‍💻 Autor
+
+Michał - [GitHub](https://github.com/michal94mk)
