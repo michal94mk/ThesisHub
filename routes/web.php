@@ -16,7 +16,40 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    $user = auth()->user();
+    $stats = [];
+    $recentTheses = [];
+
+    if ($user->isStudent()) {
+        $stats = [
+            'total_theses' => $user->thesesAsStudent()->count(),
+            'draft' => $user->thesesAsStudent()->where('status', 'draft')->count(),
+            'pending' => $user->thesesAsStudent()->where('status', 'pending_approval')->count(),
+            'approved' => $user->thesesAsStudent()->where('status', 'approved')->count(),
+        ];
+        $recentTheses = $user->thesesAsStudent()->with(['supervisor'])->latest()->take(5)->get();
+    } elseif ($user->isSupervisor()) {
+        $stats = [
+            'total_students' => $user->thesesAsSupervisor()->distinct('student_id')->count('student_id'),
+            'pending_approval' => $user->thesesAsSupervisor()->where('status', 'pending_approval')->count(),
+            'in_progress' => $user->thesesAsSupervisor()->where('status', 'approved')->count(),
+            'completed' => $user->thesesAsSupervisor()->whereIn('status', ['accepted', 'defended'])->count(),
+        ];
+        $recentTheses = $user->thesesAsSupervisor()->with(['student'])->latest()->take(5)->get();
+    } elseif ($user->isAdmin()) {
+        $stats = [
+            'total_theses' => \App\Models\Thesis::count(),
+            'total_users' => \App\Models\User::count(),
+            'pending_approval' => \App\Models\Thesis::where('status', 'pending_approval')->count(),
+            'this_month' => \App\Models\Thesis::whereMonth('created_at', now()->month)->count(),
+        ];
+        $recentTheses = \App\Models\Thesis::with(['student', 'supervisor'])->latest()->take(5)->get();
+    }
+
+    return Inertia::render('Dashboard', [
+        'stats' => $stats,
+        'recentTheses' => $recentTheses,
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

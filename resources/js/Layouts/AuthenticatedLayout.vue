@@ -39,6 +39,12 @@ const showingNavigationDropdown = ref(false);
                                 >
                                     Dashboard
                                 </NavLink>
+                                <NavLink
+                                    :href="route('theses.index')"
+                                    :active="route().current('theses.*')"
+                                >
+                                    Theses
+                                </NavLink>
                             </div>
                         </div>
 
@@ -145,6 +151,12 @@ const showingNavigationDropdown = ref(false);
                             :active="route().current('dashboard')"
                         >
                             Dashboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('theses.index')"
+                            :active="route().current('theses.*')"
+                        >
+                            Theses
                         </ResponsiveNavLink>
                     </div>
 
