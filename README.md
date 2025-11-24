@@ -71,9 +71,14 @@ The application has 3 roles:
 - [x] Authentication system with 3 roles
 - [x] Role-checking middleware
 - [x] Seeders with test users
+- [x] Thesis model with relationships
+- [x] Thesis controller with CRUD operations
+- [x] Authorization policies for theses
+- [x] Database migrations for theses
+- [x] Sample thesis data (7 theses with various statuses)
 
 🚧 In Progress:
-- [ ] Thesis model
+- [ ] Frontend views for thesis management
 - [ ] Document upload + versioning
 - [ ] Chat system
 - [ ] Calendar and deadlines

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ThesisController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,6 +23,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // Thesis routes
+    Route::resource('theses', ThesisController::class);
+    
+    // Thesis action routes
+    Route::post('theses/{thesis}/submit', [ThesisController::class, 'submit'])->name('theses.submit');
+    Route::post('theses/{thesis}/approve', [ThesisController::class, 'approve'])->name('theses.approve');
+    Route::post('theses/{thesis}/reject', [ThesisController::class, 'reject'])->name('theses.reject');
+    Route::post('theses/{thesis}/return-for-corrections', [ThesisController::class, 'returnForCorrections'])->name('theses.returnForCorrections');
 });
 
 // Routes with role checking (examples)

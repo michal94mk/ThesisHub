@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -77,5 +78,21 @@ class User extends Authenticatable
     public function hasRole(string $role): bool
     {
         return $this->role === $role;
+    }
+
+    /**
+     * Get theses where user is a student
+     */
+    public function thesesAsStudent(): HasMany
+    {
+        return $this->hasMany(Thesis::class, 'student_id');
+    }
+
+    /**
+     * Get theses where user is a supervisor
+     */
+    public function thesesAsSupervisor(): HasMany
+    {
+        return $this->hasMany(Thesis::class, 'supervisor_id');
     }
 }
