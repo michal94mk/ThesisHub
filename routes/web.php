@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ThesisController;
 use Illuminate\Foundation\Application;
@@ -65,6 +66,11 @@ Route::middleware('auth')->group(function () {
     Route::post('theses/{thesis}/approve', [ThesisController::class, 'approve'])->name('theses.approve');
     Route::post('theses/{thesis}/reject', [ThesisController::class, 'reject'])->name('theses.reject');
     Route::post('theses/{thesis}/return-for-corrections', [ThesisController::class, 'returnForCorrections'])->name('theses.returnForCorrections');
+    
+    // Document routes
+    Route::post('theses/{thesis}/documents', [DocumentController::class, 'store'])->name('documents.store');
+    Route::get('documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+    Route::delete('documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
 });
 
 // Routes with role checking (examples)

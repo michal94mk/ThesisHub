@@ -18,6 +18,7 @@ const props = defineProps({
 
 const showRejectModal = ref(false);
 const showReturnModal = ref(false);
+const showUploadModal = ref(false);
 
 const rejectForm = useForm({
     notes: '',
@@ -26,6 +27,58 @@ const rejectForm = useForm({
 const returnForm = useForm({
     notes: '',
 });
+
+const uploadForm = useForm({
+    file: null,
+    description: '',
+});
+
+const fileInput = ref(null);
+
+const handleFileSelect = (event) => {
+    uploadForm.file = event.target.files[0];
+};
+
+const uploadDocument = () => {
+    const formData = new FormData();
+    formData.append('file', uploadForm.file);
+    if (uploadForm.description) {
+        formData.append('description', uploadForm.description);
+    }
+
+    router.post(route('documents.store', props.thesis.id), formData, {
+        forceFormData: true,
+        preserveScroll: true,
+        onSuccess: () => {
+            showUploadModal.value = false;
+            uploadForm.reset();
+            if (fileInput.value) {
+                fileInput.value.value = '';
+            }
+        },
+    });
+};
+
+const deleteDocument = (documentId) => {
+    if (confirm('Are you sure you want to delete this document?')) {
+        router.delete(route('documents.destroy', documentId), {
+            preserveScroll: true,
+        });
+    }
+};
+
+const formatFileSize = (bytes) => {
+    const units = ['B', 'KB', 'MB', 'GB'];
+    let size = bytes;
+    let unitIndex = 0;
+    
+    while (size > 1024 && unitIndex < units.length - 1) {
+        size /= 1024;
+        unitIndex++;
+    }
+    
+    return size.toFixed(2) + ' ' + units[unitIndex];
+};
 
 const getStatusColor = (status) => {
     const colors = {
@@ -238,6 +291,91 @@ const canDelete = (user) => {
                     </div>
                 </div>
 
+                <!-- Documents -->
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-lg font-medium text-gray-900">Documents</h4>
+                            <PrimaryButton
+                                v-if="canEdit($page.props.auth.user)"
+                                @click="showUploadModal = true"
+                                class="text-sm"
+                            >
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                </svg>
+                                Upload Document
+                            </PrimaryButton>
+                        </div>
+
+                        <!-- Documents List -->
+                        <div v-if="thesis.documents && thesis.documents.length > 0" class="space-y-3">
+                            <div
+                                v-for="document in thesis.documents"
+                                :key="document.id"
+                                class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
+                            >
+                                <div class="flex items-center space-x-3 flex-1">
+                                    <!-- File Icon -->
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-10 w-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    
+                                    <!-- File Info -->
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900 truncate">
+                                            {{ document.original_name }}
+                                        </p>
+                                        <p class="text-xs text-gray-500">
+                                            {{ formatFileSize(document.size) }} • 
+                                            Uploaded by {{ document.uploader?.name }} • 
+                                            {{ new Date(document.created_at).toLocaleString() }}
+                                        </p>
+                                        <p v-if="document.description" class="text-xs text-gray-600 mt-1">
+                                            {{ document.description }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="flex items-center space-x-2">
+                                    <a
+                                        :href="route('documents.download', document.id)"
+                                        class="inline-flex items-center px-3 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                                    >
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        Download
+                                    </a>
+                                    <button
+                                        v-if="canEdit($page.props.auth.user)"
+                                        @click="deleteDocument(document.id)"
+                                        class="inline-flex items-center px-3 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                                    >
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div v-else class="text-center py-8">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">No documents</h3>
+                            <p class="mt-1 text-sm text-gray-500">
+                                Upload your first document to get started.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Actions -->
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
@@ -369,6 +507,63 @@ const canDelete = (user) => {
                         Return for Corrections
                     </PrimaryButton>
                 </div>
+            </div>
+        </Modal>
+
+        <!-- Upload Document Modal -->
+        <Modal :show="showUploadModal" @close="showUploadModal = false">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Upload Document
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-600">
+                    Upload a document for this thesis. Accepted formats: PDF, DOC, DOCX, TXT, ZIP, RAR (max 50MB).
+                </p>
+
+                <form @submit.prevent="uploadDocument" class="mt-6 space-y-4">
+                    <div>
+                        <InputLabel for="file" value="Select File *" />
+                        <input
+                            ref="fileInput"
+                            id="file"
+                            type="file"
+                            @change="handleFileSelect"
+                            accept=".pdf,.doc,.docx,.txt,.zip,.rar"
+                            required
+                            class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                        />
+                        <p v-if="uploadForm.file" class="mt-2 text-sm text-gray-600">
+                            Selected: {{ uploadForm.file.name }} ({{ formatFileSize(uploadForm.file.size) }})
+                        </p>
+                        <InputError :message="uploadForm.errors.file" class="mt-2" />
+                    </div>
+
+                    <div>
+                        <InputLabel for="description" value="Description (optional)" />
+                        <textarea
+                            id="description"
+                            v-model="uploadForm.description"
+                            rows="3"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            placeholder="Add a brief description of this document..."
+                        ></textarea>
+                        <InputError :message="uploadForm.errors.description" class="mt-2" />
+                    </div>
+
+                    <div class="flex justify-end gap-3">
+                        <SecondaryButton type="button" @click="showUploadModal = false">
+                            Cancel
+                        </SecondaryButton>
+                        <PrimaryButton
+                            type="submit"
+                            :disabled="uploadForm.processing || !uploadForm.file"
+                        >
+                            <span v-if="uploadForm.processing">Uploading...</span>
+                            <span v-else>Upload Document</span>
+                        </PrimaryButton>
+                    </div>
+                </form>
             </div>
         </Modal>
     </AuthenticatedLayout>

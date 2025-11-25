@@ -90,7 +90,7 @@ class ThesisController extends Controller
     public function show(Thesis $thesis)
     {
         // Load relationships
-        $thesis->load(['student', 'supervisor']);
+        $thesis->load(['student', 'supervisor', 'documents.uploader']);
         
         // Check authorization
         $this->authorize('view', $thesis);
