@@ -76,10 +76,13 @@ The application has 3 roles:
 - [x] Authorization policies for theses
 - [x] Database migrations for theses
 - [x] Sample thesis data (7 theses with various statuses)
+- [x] Frontend views for thesis management (Index, Create, Edit, Show)
+- [x] Role-based dashboards with statistics
+- [x] Document upload and download (PDF, DOC, DOCX, TXT, ZIP, RAR)
+- [x] Document management (list, upload, delete)
 
 🚧 In Progress:
-- [ ] Frontend views for thesis management
-- [ ] Document upload + versioning
+- [ ] Document versioning
 - [ ] Chat system
 - [ ] Calendar and deadlines
 - [ ] Notification system
