@@ -1,8 +1,10 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+
+const page = usePage();
 
 const props = defineProps({
     thesisId: {
@@ -71,7 +73,7 @@ const formatTime = (dateString) => {
 };
 
 const isOwnMessage = (message) => {
-    return message.user.id === window.Laravel.page.props.auth.user.id;
+    return message.user.id === page.props.auth.user.id;
 };
 
 const getRoleBadgeColor = (role) => {
