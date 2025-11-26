@@ -93,6 +93,14 @@ class Thesis extends Model
     }
 
     /**
+     * Get the messages for the thesis.
+     */
+    public function messages(): HasMany
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    /**
      * Check if thesis is in draft status
      */
     public function isDraft(): bool

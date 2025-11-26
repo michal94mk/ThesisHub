@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ThesisController;
 use Illuminate\Foundation\Application;
@@ -71,6 +72,11 @@ Route::middleware('auth')->group(function () {
     Route::post('theses/{thesis}/documents', [DocumentController::class, 'store'])->name('documents.store');
     Route::get('documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
     Route::delete('documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
+    
+    // Message routes
+    Route::get('theses/{thesis}/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::post('theses/{thesis}/messages', [MessageController::class, 'store'])->name('messages.store');
+    Route::get('theses/{thesis}/messages/unread-count', [MessageController::class, 'unreadCount'])->name('messages.unreadCount');
 });
 
 // Routes with role checking (examples)

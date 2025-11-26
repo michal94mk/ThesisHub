@@ -8,6 +8,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
+import ChatBox from '@/Components/ChatBox.vue';
 
 const props = defineProps({
     thesis: {
@@ -373,6 +374,14 @@ const canDelete = (user) => {
                                 Upload your first document to get started.
                             </p>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Chat -->
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h4 class="text-lg font-medium text-gray-900 mb-4">Communication</h4>
+                        <ChatBox :thesis-id="thesis.id" />
                     </div>
                 </div>
 
