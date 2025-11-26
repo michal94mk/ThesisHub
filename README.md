@@ -80,12 +80,15 @@ The application has 3 roles:
 - [x] Role-based dashboards with statistics
 - [x] Document upload and download (PDF, DOC, DOCX, TXT, ZIP, RAR)
 - [x] Document management (list, upload, delete)
+- [x] Real-time chat system (student ↔ supervisor communication)
+- [x] Message polling with auto-refresh every 5 seconds
+- [x] Chat history with read status tracking
 
 🚧 In Progress:
 - [ ] Document versioning
-- [ ] Chat system
+- [ ] Notification system (bell icon)
 - [ ] Calendar and deadlines
-- [ ] Notification system
+- [ ] Email notifications
 
 ## 📄 License
 
