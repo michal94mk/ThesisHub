@@ -83,10 +83,13 @@ The application has 3 roles:
 - [x] Real-time chat system (student ↔ supervisor communication)
 - [x] Message polling with auto-refresh every 5 seconds
 - [x] Chat history with read status tracking
+- [x] In-app notification system with bell icon
+- [x] Notification types: thesis submitted, approved, rejected, returned, new message
+- [x] Unread notification badge with auto-refresh
+- [x] Mark as read and mark all as read functionality
 
 🚧 In Progress:
 - [ ] Document versioning
-- [ ] Notification system (bell icon)
 - [ ] Calendar and deadlines
 - [ ] Email notifications
 
