@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ThesisController;
 use Illuminate\Foundation\Application;
@@ -77,6 +78,12 @@ Route::middleware('auth')->group(function () {
     Route::get('theses/{thesis}/messages', [MessageController::class, 'index'])->name('messages.index');
     Route::post('theses/{thesis}/messages', [MessageController::class, 'store'])->name('messages.store');
     Route::get('theses/{thesis}/messages/unread-count', [MessageController::class, 'unreadCount'])->name('messages.unreadCount');
+    
+    // Notification routes
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('notifications/unread-count', [NotificationController::class, 'unreadCount'])->name('notifications.unreadCount');
+    Route::post('notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::post('notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
 });
 
 // Routes with role checking (examples)

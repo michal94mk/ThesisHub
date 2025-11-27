@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Models\Thesis;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -169,6 +170,18 @@ class ThesisController extends Controller
         
         $thesis->submit();
         
+        // Notify supervisor
+        Notification::create([
+            'user_id' => $thesis->supervisor_id,
+            'type' => 'thesis_submitted',
+            'title' => 'New Thesis Submitted',
+            'message' => $thesis->student->name . ' submitted "' . $thesis->title . '" for approval',
+            'icon' => '📝',
+            'color' => 'yellow',
+            'action_url' => route('theses.show', $thesis->id),
+            'related_thesis_id' => $thesis->id,
+        ]);
+        
         return redirect()->route('theses.show', $thesis)
             ->with('success', 'Thesis submitted for approval.');
     }
@@ -187,6 +200,18 @@ class ThesisController extends Controller
         }
         
         $thesis->approve();
+        
+        // Notify student
+        Notification::create([
+            'user_id' => $thesis->student_id,
+            'type' => 'thesis_approved',
+            'title' => 'Thesis Approved',
+            'message' => 'Your thesis "' . $thesis->title . '" has been approved!',
+            'icon' => '✅',
+            'color' => 'green',
+            'action_url' => route('theses.show', $thesis->id),
+            'related_thesis_id' => $thesis->id,
+        ]);
         
         return redirect()->route('theses.show', $thesis)
             ->with('success', 'Thesis approved successfully.');
@@ -207,6 +232,18 @@ class ThesisController extends Controller
         
         $thesis->reject($validated['notes']);
         
+        // Notify student
+        Notification::create([
+            'user_id' => $thesis->student_id,
+            'type' => 'thesis_rejected',
+            'title' => 'Thesis Rejected',
+            'message' => 'Your thesis "' . $thesis->title . '" has been rejected. Check supervisor notes.',
+            'icon' => '❌',
+            'color' => 'red',
+            'action_url' => route('theses.show', $thesis->id),
+            'related_thesis_id' => $thesis->id,
+        ]);
+        
         return redirect()->route('theses.show', $thesis)
             ->with('success', 'Thesis rejected.');
     }
@@ -225,6 +262,18 @@ class ThesisController extends Controller
         ]);
         
         $thesis->returnForCorrections($validated['notes']);
+        
+        // Notify student
+        Notification::create([
+            'user_id' => $thesis->student_id,
+            'type' => 'thesis_returned',
+            'title' => 'Thesis Returned for Corrections',
+            'message' => 'Your thesis "' . $thesis->title . '" has been returned. Please review supervisor notes.',
+            'icon' => '🔄',
+            'color' => 'orange',
+            'action_url' => route('theses.show', $thesis->id),
+            'related_thesis_id' => $thesis->id,
+        ]);
         
         return redirect()->route('theses.show', $thesis)
             ->with('success', 'Thesis returned for corrections.');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use App\Models\Notification;
 use App\Models\Thesis;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -56,6 +57,23 @@ class MessageController extends Controller
 
         // Load user relationship
         $message->load('user:id,name,email,role');
+
+        // Notify the other party (student or supervisor)
+        $recipientId = $thesis->student_id === auth()->id() 
+            ? $thesis->supervisor_id 
+            : $thesis->student_id;
+
+        Notification::create([
+            'user_id' => $recipientId,
+            'type' => 'new_message',
+            'title' => 'New Message',
+            'message' => auth()->user()->name . ' sent you a message about "' . $thesis->title . '"',
+            'icon' => '💬',
+            'color' => 'blue',
+            'action_url' => route('theses.show', $thesis->id) . '#chat',
+            'related_thesis_id' => $thesis->id,
+            'related_message_id' => $message->id,
+        ]);
 
         return response()->json([
             'message' => $message,
